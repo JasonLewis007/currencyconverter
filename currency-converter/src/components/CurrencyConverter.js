@@ -30,6 +30,8 @@ const buttonStyle = {
   cursor: 'pointer',
 };
 
+const API_KEY = 'fca_live_TP1MXg6oso076o2N0v0G79hWLvLLe1BGV01QKXne'; // Your API key
+
 function CurrencyConverter() {
   const [amount, setAmount] = useState('');
   const [fromCurrency, setFromCurrency] = useState('USD');
@@ -41,8 +43,8 @@ function CurrencyConverter() {
     // Fetch available currencies when the component mounts
     async function fetchCurrencies() {
       try {
-        const response = await axios.get('YOUR_API_ENDPOINT');
-        const availableCurrencies = Object.keys(response.data.rates);
+        const response = await axios.get(`https://api.freecurrencyapi.com/v1/currencies?apikey=${API_KEY}`);
+        const availableCurrencies = Object.keys(response.data);
         setCurrencies(availableCurrencies);
       } catch (error) {
         console.error(error);
@@ -54,11 +56,8 @@ function CurrencyConverter() {
 
   const convert = async () => {
     try {
-      const response = await axios.get('/api/currency');
-      const rates = response.data;
-
-      // Perform the currency conversion
-      const convertedResult = (amount * rates[toCurrency]) / rates[fromCurrency];
+      const response = await axios.get(`https://api.freecurrencyapi.com/v1/convert?from=${fromCurrency}&to=${toCurrency}&apikey=${API_KEY}`);
+      const convertedResult = amount * response.data.rate;
       setResult(`${convertedResult.toFixed(2)} ${toCurrency}`);
     } catch (error) {
       console.error(error);
@@ -128,5 +127,8 @@ function CurrencyConverter() {
 }
 
 export default CurrencyConverter;
+
+
+
 
 
